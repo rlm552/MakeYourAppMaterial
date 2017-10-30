@@ -16,9 +16,10 @@
 -->
 
 <resources>
+    <color name="brand_primary">#3E50B4</color>
 
     <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
-
+        <item name="colorPrimary">@color/brand_primary</item>
     </style>
 
     <style name="Theme.Bacon.Detail">

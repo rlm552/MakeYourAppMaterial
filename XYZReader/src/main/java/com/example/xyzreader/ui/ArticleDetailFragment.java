@@ -35,6 +35,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 
+import org.w3c.dom.Text;
+
 /**
  * A fragment representing a single Article detail screen. This fragment is
  * either contained in a {@link ArticleListActivity} in two-pane mode (on
@@ -46,6 +48,7 @@ public class ArticleDetailFragment extends Fragment implements
 
     public static final String ARG_ITEM_ID = "item_id";
     private static final float PARALLAX_FACTOR = 1.25f;
+
 
     private Cursor mCursor;
     private long mItemId;
@@ -87,7 +90,6 @@ public class ArticleDetailFragment extends Fragment implements
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             mItemId = getArguments().getLong(ARG_ITEM_ID);
         }
-
         mIsCard = getResources().getBoolean(R.bool.detail_is_card);
         mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(
                 R.dimen.detail_card_top_margin);
@@ -179,8 +181,8 @@ public class ArticleDetailFragment extends Fragment implements
 
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) mRootView.findViewById(R.id.main_collapsing);
-
-        bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
+        TextView titleView = (TextView) mRootView.findViewById(R.id.book_title);
+        //bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
             mRootView.setAlpha(0);
@@ -189,15 +191,18 @@ public class ArticleDetailFragment extends Fragment implements
             String byline = null;
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-                byline = DateUtils.getRelativeTimeSpanString(
-                        publishedDate.getTime(),
-                        System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                        DateUtils.FORMAT_ABBREV_ALL).toString() + " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
+//                byline = DateUtils.getRelativeTimeSpanString(
+//                        publishedDate.getTime(),
+//                        System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+//                        DateUtils.FORMAT_ABBREV_ALL).toString() + " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
+                byline = " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
             } else {
-                byline = outputFormat.format(publishedDate) + " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
+                //byline = outputFormat.format(publishedDate) + " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
+                byline = " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
             }
 
-            collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE) + "\n" + byline);
+            //collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE) + "\n" + byline);
+            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE) + "\n" + byline);
 //            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
 //                bylineView.setText(Html.fromHtml(
 //                        DateUtils.getRelativeTimeSpanString(
@@ -237,7 +242,6 @@ public class ArticleDetailFragment extends Fragment implements
                     });
         } else {
             mRootView.setVisibility(View.GONE);
-            collapsingToolbarLayout.setTitle("N/A");
             bodyView.setText("N/A");
         }
     }

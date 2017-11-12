@@ -16,14 +16,14 @@
 -->
 
 <resources>
-    <color name="brand_primary">#3E50B4</color>
+    <color name="brand_primary">#03A9F4</color>
 
     <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/brand_primary</item>
     </style>
 
     <style name="Theme.Bacon.Detail">
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">?colorPrimaryDark</item>
     </style>
 
 </resources>

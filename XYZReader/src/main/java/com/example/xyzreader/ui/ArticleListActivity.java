@@ -1,5 +1,7 @@
 package com.example.xyzreader.ui;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,9 +9,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -45,6 +49,9 @@ public class ArticleListActivity extends ActionBarActivity implements
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
+
+    private Activity activity = (Activity) this;
+    static final String TRANSITION_NAME = "TRANSITION_NAME";
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -115,9 +122,10 @@ public class ArticleListActivity extends ActionBarActivity implements
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
         int columnCount = getResources().getInteger(R.integer.list_column_count);
-        StaggeredGridLayoutManager sglm =
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(sglm);
+//        StaggeredGridLayoutManager sglm =
+//                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columnCount);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
     }
 
     @Override
@@ -145,8 +153,20 @@ public class ArticleListActivity extends ActionBarActivity implements
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
+                    Bundle bundle = null;
+
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW,
+                            ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition())));
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        final View enterView = findViewById(R.id.thumbnail);
+                        final String transitionName = enterView.getTransitionName();
+                        bundle = ActivityOptions.makeSceneTransitionAnimation(activity, enterView, transitionName).toBundle();
+                        intent.putExtra(TRANSITION_NAME, transitionName);
+                    }
+
+                    startActivity(intent, bundle);
                 }
             });
             return vh;
@@ -187,6 +207,11 @@ public class ArticleListActivity extends ActionBarActivity implements
                     mCursor.getString(ArticleLoader.Query.THUMB_URL),
                     ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                holder.thumbnailView.setTransitionName("book" + position);
+                Log.v("TRANSITION_NAME", "book" + position);
+            }
         }
 
         @Override

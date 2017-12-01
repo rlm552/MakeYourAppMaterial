@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ShareCompat;
@@ -178,11 +179,16 @@ public class ArticleDetailFragment extends Fragment implements
         if (mRootView == null) {
             return;
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Bundle extras = getActivity().getIntent().getExtras();
+            final String imageTransitionName = extras.getString(ArticleListActivity.TRANSITION_NAME);
+            mPhotoView.setTransitionName(imageTransitionName);
+        }
+
 
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) mRootView.findViewById(R.id.main_collapsing);
         TextView titleView = (TextView) mRootView.findViewById(R.id.book_title);
-        //bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
             mRootView.setAlpha(0);

@@ -20,6 +20,7 @@
 
     <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/brand_primary</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="Theme.Bacon.Detail">

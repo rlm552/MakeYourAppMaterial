@@ -8,7 +8,7 @@ import static com.example.xyzreader.data.ItemsProvider.Tables;
 
 public class ItemsDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "xyzreader.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     public ItemsDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,7 +24,7 @@ public class ItemsDatabase extends SQLiteOpenHelper {
                 + ItemsContract.ItemsColumns.BODY + " TEXT NOT NULL,"
                 + ItemsContract.ItemsColumns.THUMB_URL + " TEXT NOT NULL,"
                 + ItemsContract.ItemsColumns.PHOTO_URL + " TEXT NOT NULL,"
-                + ItemsContract.ItemsColumns.ASPECT_RATIO + " REAL NOT NULL DEFAULT 1.5,"
+                + ItemsContract.ItemsColumns.ASPECT_RATIO + " REAL NOT NULL DEFAULT 0.65,"
                 + ItemsContract.ItemsColumns.PUBLISHED_DATE + " TEXT NOT NULL"
                 + ")" );
     }

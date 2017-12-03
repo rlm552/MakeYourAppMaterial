@@ -44,6 +44,7 @@ import java.util.GregorianCalendar;
  */
 public class ArticleListActivity extends ActionBarActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
+    public static View sharedView;
 
     private static final String TAG = ArticleListActivity.class.toString();
     private Toolbar mToolbar;
@@ -159,10 +160,12 @@ public class ArticleListActivity extends ActionBarActivity implements
                     // Shared Element Transition //
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         final View enterView = view.findViewById(R.id.thumbnail);
+                        sharedView = enterView;
                         final String transitionName = enterView.getTransitionName();
                         Log.v("ENTER_TRANSITION_NAME", transitionName );
                         bundle = ActivityOptions.makeSceneTransitionAnimation(activity, enterView, transitionName).toBundle();
                         intent.putExtra(TRANSITION_NAME, transitionName);
+
                     }
 
                     startActivity(intent, bundle);

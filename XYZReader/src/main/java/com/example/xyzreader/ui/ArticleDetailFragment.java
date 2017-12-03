@@ -179,12 +179,13 @@ public class ArticleDetailFragment extends Fragment implements
         if (mRootView == null) {
             return;
         }
+        // Get transition name from ArticleListActivity.java and set it for PhotoView //
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             Bundle extras = getActivity().getIntent().getExtras();
             final String imageTransitionName = extras.getString(ArticleListActivity.TRANSITION_NAME);
+            Log.v("DETAIL_TRANSITION_NAME", imageTransitionName);
             mPhotoView.setTransitionName(imageTransitionName);
         }
-
 
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) mRootView.findViewById(R.id.main_collapsing);

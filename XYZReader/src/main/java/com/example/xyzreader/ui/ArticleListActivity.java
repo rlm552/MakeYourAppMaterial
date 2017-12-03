@@ -154,14 +154,13 @@ public class ArticleListActivity extends ActionBarActivity implements
                 @Override
                 public void onClick(View view) {
                     Bundle bundle = null;
-
-
                     Intent intent = new Intent(Intent.ACTION_VIEW,
                             ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition())));
-
+                    // Shared Element Transition //
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        final View enterView = findViewById(R.id.thumbnail);
+                        final View enterView = view.findViewById(R.id.thumbnail);
                         final String transitionName = enterView.getTransitionName();
+                        Log.v("ENTER_TRANSITION_NAME", transitionName );
                         bundle = ActivityOptions.makeSceneTransitionAnimation(activity, enterView, transitionName).toBundle();
                         intent.putExtra(TRANSITION_NAME, transitionName);
                     }

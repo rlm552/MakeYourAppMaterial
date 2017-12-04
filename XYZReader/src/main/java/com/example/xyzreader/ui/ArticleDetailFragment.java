@@ -88,6 +88,10 @@ public class ArticleDetailFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getActivity() != null){
+            Log.v(TAG, "Activity Found");
+            getActivity().postponeEnterTransition();
+        }
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             mItemId = getArguments().getLong(ARG_ITEM_ID);
@@ -138,6 +142,17 @@ public class ArticleDetailFragment extends Fragment implements
         return mRootView;
     }
 
+    private void scheduleStartPostponedTransition(final View sharedElement) {
+        sharedElement.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
+                        getActivity().startPostponedEnterTransition();
+                        return true;
+                    }
+                });
+    }
 
     private void updateStatusBar() {
         int color = 0;
@@ -278,6 +293,7 @@ public class ArticleDetailFragment extends Fragment implements
         }
 
         bindViews();
+        scheduleStartPostponedTransition(ArticleListActivity.sharedView);
     }
 
     @Override

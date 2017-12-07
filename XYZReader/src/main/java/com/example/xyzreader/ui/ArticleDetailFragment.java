@@ -88,10 +88,6 @@ public class ArticleDetailFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getActivity() != null){
-            Log.v(TAG, "Activity Found");
-            getActivity().postponeEnterTransition();
-        }
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             mItemId = getArguments().getLong(ARG_ITEM_ID);
@@ -197,13 +193,8 @@ public class ArticleDetailFragment extends Fragment implements
         if (mRootView == null) {
             return;
         }
-        // Get transition name from ArticleListActivity.java and set it for PhotoView //
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Bundle extras = getActivity().getIntent().getExtras();
-            final String imageTransitionName = extras.getString(ArticleListActivity.TRANSITION_NAME);
-            Log.v("DETAIL_TRANSITION_NAME", imageTransitionName);
-            mPhotoView.setTransitionName(imageTransitionName);
-        }
+
+
 
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) mRootView.findViewById(R.id.main_collapsing);
@@ -227,7 +218,9 @@ public class ArticleDetailFragment extends Fragment implements
             }
 
             //collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE) + "\n" + byline);
-            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE) + "\n" + byline);
+            final String title = mCursor.getString(ArticleLoader.Query.TITLE);
+            titleView.setText(title + "\n" + byline);
+            Log.v(TAG, (String) titleView.getText());
 //            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
 //                bylineView.setText(Html.fromHtml(
 //                        DateUtils.getRelativeTimeSpanString(
@@ -246,6 +239,17 @@ public class ArticleDetailFragment extends Fragment implements
 //                                + "</font>"));
 //
 //            }
+            // Get transition name from ArticleListActivity.java and set it for PhotoView //
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
+                Bundle extras = getActivity().getIntent().getExtras();
+                final String imageTransitionName = extras.getString(ArticleListActivity.TRANSITION_NAME);
+                final String listTitle = extras.getString(ArticleListActivity.TITLE);
+                Log.v(TAG, imageTransitionName + ":" + "title:" + title + "listTitle:" + listTitle );
+                if (listTitle.equals(title)){
+                    Log.v(TAG, "Inside if statement");
+                    mPhotoView.setTransitionName(imageTransitionName);
+                }
+            }
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
@@ -293,7 +297,7 @@ public class ArticleDetailFragment extends Fragment implements
         }
 
         bindViews();
-        scheduleStartPostponedTransition(ArticleListActivity.sharedView);
+        scheduleStartPostponedTransition(mPhotoView);
     }
 
     @Override

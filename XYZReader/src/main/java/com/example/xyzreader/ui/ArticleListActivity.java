@@ -44,7 +44,7 @@ import java.util.GregorianCalendar;
  */
 public class ArticleListActivity extends ActionBarActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    public static View sharedView;
+    private String LOG_TAG = getClass().getSimpleName();
 
     private static final String TAG = ArticleListActivity.class.toString();
     private Toolbar mToolbar;
@@ -53,6 +53,7 @@ public class ArticleListActivity extends ActionBarActivity implements
 
     private Activity activity = (Activity) this;
     static final String TRANSITION_NAME = "TRANSITION_NAME";
+    static final String TITLE = "TITLE";
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -95,6 +96,11 @@ public class ArticleListActivity extends ActionBarActivity implements
         super.onStop();
         unregisterReceiver(mRefreshingReceiver);
     }
+
+//    @Override
+//    public void onActivityReeneter(int requestCode, Intent data){
+//
+//    }
 
     private boolean mIsRefreshing = false;
 
@@ -160,12 +166,13 @@ public class ArticleListActivity extends ActionBarActivity implements
                     // Shared Element Transition //
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         final View enterView = view.findViewById(R.id.thumbnail);
-                        sharedView = enterView;
                         final String transitionName = enterView.getTransitionName();
-                        Log.v("ENTER_TRANSITION_NAME", transitionName );
+                        Log.v(LOG_TAG, transitionName );
                         bundle = ActivityOptions.makeSceneTransitionAnimation(activity, enterView, transitionName).toBundle();
                         intent.putExtra(TRANSITION_NAME, transitionName);
-
+                        TextView titleView = (TextView) view.findViewById(R.id.article_title);
+                        String title = (String) titleView.getText();
+                        intent.putExtra(TITLE, title);
                     }
 
                     startActivity(intent, bundle);

@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -18,6 +19,8 @@ import java.util.GregorianCalendar;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
@@ -37,6 +40,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 
+import static com.example.xyzreader.ui.ArticleListActivity.mTransitionnames;
+
 import org.w3c.dom.Text;
 
 /**
@@ -49,6 +54,7 @@ public class ArticleDetailFragment extends Fragment implements
     private static final String TAG = "ArticleDetailFragment";
 
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_BOOK_COVER_POSITION = "arg_book_cover_position";
     private static final float PARALLAX_FACTOR = 1.25f;
 
 
@@ -63,6 +69,7 @@ public class ArticleDetailFragment extends Fragment implements
     private int mScrollY;
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
+    private int mBookCoverPosition;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -77,9 +84,10 @@ public class ArticleDetailFragment extends Fragment implements
     public ArticleDetailFragment() {
     }
 
-    public static ArticleDetailFragment newInstance(long itemId) {
+    public static ArticleDetailFragment newInstance(long itemId, int position) {
         Bundle arguments = new Bundle();
         arguments.putLong(ARG_ITEM_ID, itemId);
+        arguments.putInt(ARG_BOOK_COVER_POSITION, position);
         ArticleDetailFragment fragment = new ArticleDetailFragment();
         fragment.setArguments(arguments);
         return fragment;
@@ -96,6 +104,8 @@ public class ArticleDetailFragment extends Fragment implements
         mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(
                 R.dimen.detail_card_top_margin);
         setHasOptionsMenu(true);
+
+        mBookCoverPosition = getArguments().getInt(ARG_BOOK_COVER_POSITION);
 
     }
 
@@ -123,6 +133,8 @@ public class ArticleDetailFragment extends Fragment implements
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
+
+
         mRootView.findViewById(R.id.share_fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,6 +145,8 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
         bindViews();
+        String transitionName = mTransitionnames[mBookCoverPosition];
+        mPhotoView.setTransitionName(transitionName);
 
         updateStatusBar();
         return mRootView;
@@ -194,8 +208,6 @@ public class ArticleDetailFragment extends Fragment implements
             return;
         }
 
-
-
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) mRootView.findViewById(R.id.main_collapsing);
         TextView titleView = (TextView) mRootView.findViewById(R.id.book_title);
@@ -220,7 +232,6 @@ public class ArticleDetailFragment extends Fragment implements
             //collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE) + "\n" + byline);
             final String title = mCursor.getString(ArticleLoader.Query.TITLE);
             titleView.setText(title + "\n" + byline);
-            Log.v(TAG, (String) titleView.getText());
 //            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
 //                bylineView.setText(Html.fromHtml(
 //                        DateUtils.getRelativeTimeSpanString(
@@ -240,16 +251,16 @@ public class ArticleDetailFragment extends Fragment implements
 //
 //            }
             // Get transition name from ArticleListActivity.java and set it for PhotoView //
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
-                Bundle extras = getActivity().getIntent().getExtras();
-                final String imageTransitionName = extras.getString(ArticleListActivity.TRANSITION_NAME);
-                final String listTitle = extras.getString(ArticleListActivity.TITLE);
-                Log.v(TAG, imageTransitionName + ":" + "title:" + title + "listTitle:" + listTitle );
-                if (listTitle.equals(title)){
-                    Log.v(TAG, "Inside if statement");
-                    mPhotoView.setTransitionName(imageTransitionName);
-                }
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
+//                Bundle extras = getActivity().getIntent().getExtras();
+//                final String imageTransitionName = extras.getString(ArticleListActivity.TRANSITION_NAME);
+//                final String listTitle = extras.getString(ArticleListActivity.TITLE);
+//                Log.v(TAG, imageTransitionName + ":" + "title:" + title + "listTitle:" + listTitle );
+//                if (listTitle.equals(title)){
+//                    Log.v(TAG, "Inside if statement");
+//                    mPhotoView.setTransitionName(imageTransitionName);
+//                }
+//            }
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
@@ -304,6 +315,27 @@ public class ArticleDetailFragment extends Fragment implements
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mCursor = null;
         bindViews();
+    }
+
+    /**
+            * Returns the shared element that should be transitioned back to the previous Activity,
+            * or null if the view is not visible on the screen.
+            */
+    @Nullable
+    ImageView getCoverImage() {
+        if (isViewInBounds(getActivity().getWindow().getDecorView(), mPhotoView)) {
+            return mPhotoView;
+        }
+        return null;
+    }
+
+    /**
+     * Returns true if {@param view} is contained within {@param container}'s bounds.
+     */
+    private static boolean isViewInBounds(@NonNull View container, @NonNull View view) {
+        Rect containerBounds = new Rect();
+        container.getHitRect(containerBounds);
+        return view.getLocalVisibleRect(containerBounds);
     }
 
 }

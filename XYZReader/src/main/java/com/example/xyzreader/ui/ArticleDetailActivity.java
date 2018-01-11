@@ -92,6 +92,8 @@ public class ArticleDetailActivity extends ActionBarActivity
 
         postponeEnterTransition();
         setEnterSharedElementCallback(mCallback);
+
+
         mStartingPosition = getIntent().getIntExtra(STARTING_COVER_POSITION, 0);
         if(savedInstanceState == null){
             mCurrentPosition = mStartingPosition;
@@ -141,7 +143,9 @@ public class ArticleDetailActivity extends ActionBarActivity
         mUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                supportFinishAfterTransition();
                 onSupportNavigateUp();
+
             }
         });
 

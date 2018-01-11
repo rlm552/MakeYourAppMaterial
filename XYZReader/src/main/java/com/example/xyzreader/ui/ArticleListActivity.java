@@ -33,6 +33,7 @@ import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,6 +67,11 @@ public class ArticleListActivity extends AppCompatActivity implements
     static final String TRANSITION_NAME = "TRANSITION_NAME";
     static final String TITLE = "TITLE";
 
+    public static final String[] example = new String[6];
+
+    String a = example[1];
+
+
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
@@ -94,6 +100,16 @@ public class ArticleListActivity extends AppCompatActivity implements
                 mTmpReenterState = null;
             }else {
                 // If mTmpReenterState is null, then this activity is exiting.
+                View navigationBar = findViewById(android.R.id.navigationBarBackground);
+                View statusBar = findViewById(android.R.id.statusBarBackground);
+                if (navigationBar != null) {
+                    names.add(navigationBar.getTransitionName());
+                    sharedElements.put(navigationBar.getTransitionName(), navigationBar);
+                }
+                if (statusBar != null) {
+                    names.add(statusBar.getTransitionName());
+                    sharedElements.put(statusBar.getTransitionName(), statusBar);
+                }
             }
         }
     };
@@ -105,7 +121,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         setExitSharedElementCallback(mCallback);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
         final View toolbarContainerView = findViewById(R.id.toolbar_container);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
@@ -183,6 +198,9 @@ public class ArticleListActivity extends AppCompatActivity implements
         Adapter adapter = new Adapter(cursor);
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
+        int count = adapter.getItemCount();
+        Log.v(TAG, "Count in onLoadFInished is " + count);
+
         int columnCount = getResources().getInteger(R.integer.list_column_count);
 //        StaggeredGridLayoutManager sglm =
 //                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
@@ -236,6 +254,7 @@ public class ArticleListActivity extends AppCompatActivity implements
                     startActivity(intent, bundle);
                 }
             });
+
             return vh;
         }
 
@@ -274,8 +293,7 @@ public class ArticleListActivity extends AppCompatActivity implements
                     mCursor.getString(ArticleLoader.Query.THUMB_URL),
                     ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
-            holder.bind(position);
-
+            holder.bind(position, mCursor);
         }
 
         @Override
@@ -284,16 +302,17 @@ public class ArticleListActivity extends AppCompatActivity implements
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public DynamicHeightNetworkImageView thumbnailView;
         public TextView titleView;
         public TextView subtitleView;
 
-        public void bind(int position){
+        public void bind(int position, Cursor cursor){
             // Gove every book cover a transition name ///
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                 String transitionName = "book" + position;
                 Log.v(TAG, transitionName);
+                //thumbnailView.setAspectRatio(cursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
                 thumbnailView.setTransitionName(transitionName);
                 mTransitionnames[position] = transitionName;
                 thumbnailView.setTag(transitionName);
@@ -306,5 +325,11 @@ public class ArticleListActivity extends AppCompatActivity implements
             titleView = (TextView) view.findViewById(R.id.article_title);
             subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
         }
+
+        @Override
+        public void onClick(View view){
+
+        }
     }
+
 }

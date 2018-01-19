@@ -69,8 +69,6 @@ public class ArticleListActivity extends AppCompatActivity implements
 
     public static final String[] example = new String[6];
 
-    String a = example[1];
-
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -127,7 +125,6 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         getLoaderManager().initLoader(0, null, this);
-
         if (savedInstanceState == null) {
             refresh();
         }
@@ -199,8 +196,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
         int count = adapter.getItemCount();
-        Log.v(TAG, "Count in onLoadFInished is " + count);
-
         int columnCount = getResources().getInteger(R.integer.list_column_count);
 //        StaggeredGridLayoutManager sglm =
 //                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);

@@ -8,6 +8,8 @@
     <string name="action_share">Share</string>
 
     <string name="up">Up</string>
-    <string name="cover_shared_element">Cover Shared Element</string>
+    <string name="cover_shared_element">Cover Shared Element</string>'
+
+    <string name="book_image">Book Cover</string>
 
 </resources>

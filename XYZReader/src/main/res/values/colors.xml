@@ -20,6 +20,7 @@
 
     <color name="theme_primary">#04561A</color>
     <color name="theme_primary_dark">#04561A</color>
-    <color name="theme_accent">#FF4081</color>
+    <color name="theme_accent">#ff4081</color>
     <color name="ltgray">#ffe0e0e0</color>
+    <color name="primary_material_dark_1">#983d3d</color>
 </resources>

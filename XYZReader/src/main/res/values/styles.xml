@@ -19,14 +19,8 @@
     <color name="brand_primary">#03A9F4</color>
 
     <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/brand_primary</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowExitTransition">@transition/article_window_exit_transition</item>
-        <item name="android:windowReturnTransition">@transition/detail_window_return_transition</item>
     </style>
 
-    <style name="Theme.Bacon.Detail">
-        <item name="android:statusBarColor">?colorPrimaryDark</item>
-    </style>
+    <style name="Theme.Bacon.Detail" ></style>
 
 </resources>

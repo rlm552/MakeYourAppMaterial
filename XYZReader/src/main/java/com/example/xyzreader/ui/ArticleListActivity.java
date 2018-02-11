@@ -13,17 +13,13 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -33,7 +29,6 @@ import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 import com.example.xyzreader.data.UpdaterService;
-import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,8 +45,6 @@ import java.util.Map;
  */
 public class ArticleListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    private String LOG_TAG = getClass().getSimpleName();
-
     private static final String TAG = ArticleListActivity.class.toString();
     // Create a string array of transition names and fill it in the bindView method. Use this transition names in the DetailsFragment//
     public static final String[] mTransitionnames = new String[6];
@@ -63,23 +56,23 @@ public class ArticleListActivity extends AppCompatActivity implements
     private RecyclerView mRecyclerView;
     private Bundle mTmpReenterState;
 
-    private Activity activity = (Activity) this;
-    static final String TRANSITION_NAME = "TRANSITION_NAME";
-    static final String TITLE = "TITLE";
+    private final Activity activity = (Activity) this;
+    private static final String TRANSITION_NAME = "TRANSITION_NAME";
+    private static final String TITLE = "TITLE";
 
     public static final String[] example = new String[6];
 
-
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
-    private SimpleDateFormat outputFormat = new SimpleDateFormat();
+    private final SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
-    private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
+    private final GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
 
     private final SharedElementCallback mCallback = new SharedElementCallback() {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements){
             if(mTmpReenterState != null){
+
                 int startingPosition = mTmpReenterState.getInt(STARTING_COVER_POSITION);
                 int currentPosition = mTmpReenterState.getInt(CURRENT_COVER_POSITION);
                 if (startingPosition != currentPosition){
@@ -100,13 +93,15 @@ public class ArticleListActivity extends AppCompatActivity implements
                 // If mTmpReenterState is null, then this activity is exiting.
                 View navigationBar = findViewById(android.R.id.navigationBarBackground);
                 View statusBar = findViewById(android.R.id.statusBarBackground);
-                if (navigationBar != null) {
-                    names.add(navigationBar.getTransitionName());
-                    sharedElements.put(navigationBar.getTransitionName(), navigationBar);
-                }
-                if (statusBar != null) {
-                    names.add(statusBar.getTransitionName());
-                    sharedElements.put(statusBar.getTransitionName(), statusBar);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (navigationBar != null) {
+                        names.add(navigationBar.getTransitionName());
+                        sharedElements.put(navigationBar.getTransitionName(), navigationBar);
+                    }
+                    if (statusBar != null) {
+                        names.add(statusBar.getTransitionName());
+                        sharedElements.put(statusBar.getTransitionName(), statusBar);
+                    }
                 }
             }
         }
@@ -116,7 +111,9 @@ public class ArticleListActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_list);
-        setExitSharedElementCallback(mCallback);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setExitSharedElementCallback(mCallback);
+        }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         final View toolbarContainerView = findViewById(R.id.toolbar_container);
@@ -148,6 +145,11 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    @Override
     public void onActivityReenter(int requestCode, Intent data){
         super.onActivityReenter(requestCode, data);
         mTmpReenterState = new Bundle(data.getExtras());
@@ -156,14 +158,18 @@ public class ArticleListActivity extends AppCompatActivity implements
         if (startingPosition != currentPosition){
             mRecyclerView.scrollToPosition(currentPosition);
         }
-        postponeEnterTransition();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+        }
         mRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
                 // TODO: figure out why it is necessary to request layout here in order to get a smooth transition.
                 mRecyclerView.requestLayout();
-                startPostponedEnterTransition();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startPostponedEnterTransition();
+                }
                 return true;
             }
         });
@@ -171,7 +177,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
     private boolean mIsRefreshing = false;
 
-    private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
@@ -196,11 +202,14 @@ public class ArticleListActivity extends AppCompatActivity implements
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
         int count = adapter.getItemCount();
-        int columnCount = getResources().getInteger(R.integer.list_column_count);
+        int columnCount = getResources().getInteger(R.integer.column_count);
 //        StaggeredGridLayoutManager sglm =
 //                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        mRecyclerView.setLayoutManager(linearLayoutManager);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columnCount);
         mRecyclerView.setLayoutManager(gridLayoutManager);
+
     }
 
     @Override
@@ -209,7 +218,7 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder> {
-        private Cursor mCursor;
+        private final Cursor mCursor;
         private int mCoverPosition;
 
         public Adapter(Cursor cursor) {
@@ -238,7 +247,10 @@ public class ArticleListActivity extends AppCompatActivity implements
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         final View enterView = view.findViewById(R.id.thumbnail);
                         final String transitionName = enterView.getTransitionName();
-                        bundle = ActivityOptions.makeSceneTransitionAnimation(activity, enterView, transitionName).toBundle();
+                        if(getResources().getBoolean(R.bool.show_shared_transition)){
+                            bundle = ActivityOptions.makeSceneTransitionAnimation(activity, enterView, transitionName).toBundle();
+                        }
+
                         intent.putExtra(TRANSITION_NAME, transitionName);
                         TextView titleView = (TextView) view.findViewById(R.id.article_title);
                         String title = (String) titleView.getText();
@@ -298,9 +310,9 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public DynamicHeightNetworkImageView thumbnailView;
-        public TextView titleView;
-        public TextView subtitleView;
+        public final DynamicHeightNetworkImageView thumbnailView;
+        public final TextView titleView;
+        public final TextView subtitleView;
 
         public void bind(int position, Cursor cursor){
             // Gove every book cover a transition name ///

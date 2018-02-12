@@ -58,38 +58,37 @@ public class ArticleDetailActivity extends ActionBarActivity
 
     private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
 
-    private final SharedElementCallback mCallback = new SharedElementCallback() {
-        @Override
-        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements){
-            if (mIsReturning){
-                ImageView sharedElement = mCurrentDetailsFragment.getCoverImage();
-                if(sharedElement == null){
-                    // If shared element is null, then it has been scrolled off screen and
-                    // no longer visible. In this case we cancel the shared element transition by
-                    // removing the shared element from the shared elements map.
-                    names.clear();
-                    sharedElements.clear();
-                }else if (mStartingPosition != mCurrentPosition){
-                    // If the user has swiped to a different ViewPager page, then we need to
-                    // remove the old shared element and replace it with the new shared element
-                    // that should be transitioned instead.
-                    names.clear();
-                    //TODO: Make sure I set the transition name for the view
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                        names.add(sharedElement.getTransitionName());
-                        sharedElements.clear();
-                        sharedElements.put(sharedElement.getTransitionName(), sharedElement);
-                    }
-                }
-            }
-        }
-    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final SharedElementCallback mCallback = new SharedElementCallback() {
+                @Override
+                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements){
+                    if (mIsReturning){
+                        ImageView sharedElement = mCurrentDetailsFragment.getCoverImage();
+                        if(sharedElement == null){
+                            // If shared element is null, then it has been scrolled off screen and
+                            // no longer visible. In this case we cancel the shared element transition by
+                            // removing the shared element from the shared elements map.
+                            names.clear();
+                            sharedElements.clear();
+                        }else if (mStartingPosition != mCurrentPosition){
+                            // If the user has swiped to a different ViewPager page, then we need to
+                            // remove the old shared element and replace it with the new shared element
+                            // that should be transitioned instead.
+                            names.clear();
+                            //TODO: Make sure I set the transition name for the view
+                            names.add(sharedElement.getTransitionName());
+                            sharedElements.clear();
+                            sharedElements.put(sharedElement.getTransitionName(), sharedElement);
+                        }
+                    }
+                }
+            };
             postponeEnterTransition();
             setEnterSharedElementCallback(mCallback);
         }

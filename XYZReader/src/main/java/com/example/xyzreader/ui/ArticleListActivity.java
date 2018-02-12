@@ -60,16 +60,11 @@ public class ArticleListActivity extends AppCompatActivity implements
     private static final String TRANSITION_NAME = "TRANSITION_NAME";
     private static final String TITLE = "TITLE";
 
-    public static final String[] example = new String[6];
-
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
     private final SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
     private final GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +161,6 @@ public class ArticleListActivity extends AppCompatActivity implements
             @Override
             public boolean onPreDraw() {
                 mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                // TODO: figure out why it is necessary to request layout here in order to get a smooth transition.
                 mRecyclerView.requestLayout();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     startPostponedEnterTransition();
@@ -204,13 +198,8 @@ public class ArticleListActivity extends AppCompatActivity implements
         mRecyclerView.setAdapter(adapter);
         int count = adapter.getItemCount();
         int columnCount = getResources().getInteger(R.integer.column_count);
-//        StaggeredGridLayoutManager sglm =
-//                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//        mRecyclerView.setLayoutManager(linearLayoutManager);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columnCount);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-
     }
 
     @Override
@@ -319,8 +308,6 @@ public class ArticleListActivity extends AppCompatActivity implements
             // Gove every book cover a transition name ///
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                 String transitionName = "book" + position;
-                Log.v(TAG, transitionName);
-                //thumbnailView.setAspectRatio(cursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
                 thumbnailView.setTransitionName(transitionName);
                 mTransitionnames[position] = transitionName;
                 thumbnailView.setTag(transitionName);

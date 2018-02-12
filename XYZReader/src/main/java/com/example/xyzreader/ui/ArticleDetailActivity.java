@@ -14,7 +14,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +57,6 @@ public class ArticleDetailActivity extends ActionBarActivity
 
     private static final String STATE_CURRENT_PAGE_POSITION = "state_current_page_position";
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +78,6 @@ public class ArticleDetailActivity extends ActionBarActivity
                             // remove the old shared element and replace it with the new shared element
                             // that should be transitioned instead.
                             names.clear();
-                            //TODO: Make sure I set the transition name for the view
                             names.add(sharedElement.getTransitionName());
                             sharedElements.clear();
                             sharedElements.put(sharedElement.getTransitionName(), sharedElement);
@@ -248,7 +244,6 @@ public class ArticleDetailActivity extends ActionBarActivity
         Intent data = new Intent();
         data.putExtra(STARTING_COVER_POSITION, mStartingPosition);
         data.putExtra(CURRENT_COVER_POSITION, mCurrentPosition);
-        Log.v(TAG, "The current position is: " + mCurrentPosition);
         setResult(RESULT_OK, data);
         super.finishAfterTransition();
     }

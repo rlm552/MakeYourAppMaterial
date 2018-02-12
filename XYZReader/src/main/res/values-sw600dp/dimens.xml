@@ -6,8 +6,11 @@
     <dimen name="fab_margin">24dp</dimen>
 
     <!-- Article List -->
+    <dimen name="padding_top">64dp</dimen>
+    <dimen name="padding_bottom">28dp</dimen>
     <dimen name="photo_width">200dp</dimen>
     <dimen name="book_title_text_size">30sp</dimen>
     <dimen name="book_subtitle_text_size">24sp</dimen>
+
 
 </resources>

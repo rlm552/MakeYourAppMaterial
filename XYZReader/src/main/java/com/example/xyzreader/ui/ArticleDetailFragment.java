@@ -218,48 +218,14 @@ public class ArticleDetailFragment extends Fragment implements
             String byline = null;
             Date publishedDate = parsePublishedDate();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-//                byline = DateUtils.getRelativeTimeSpanString(
-//                        publishedDate.getTime(),
-//                        System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-//                        DateUtils.FORMAT_ABBREV_ALL).toString() + " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
                 byline = " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
             } else {
-                //byline = outputFormat.format(publishedDate) + " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
                 byline = " by " + mCursor.getString(ArticleLoader.Query.AUTHOR);
             }
 
             //collapsingToolbarLayout.setTitle(mCursor.getString(ArticleLoader.Query.TITLE) + "\n" + byline);
             final String title = mCursor.getString(ArticleLoader.Query.TITLE);
             titleView.setText(title + "\n" + byline);
-//            if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-//                bylineView.setText(Html.fromHtml(
-//                        DateUtils.getRelativeTimeSpanString(
-//                                publishedDate.getTime(),
-//                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-//                                DateUtils.FORMAT_ABBREV_ALL).toString()
-//                                + " by <font color='#ffffff'>"
-//                                + mCursor.getString(ArticleLoader.Query.AUTHOR)
-//                                + "</font>"));
-//
-//            } else {
-//                // If date is before 1902, just show the string
-//                bylineView.setText(Html.fromHtml(
-//                        outputFormat.format(publishedDate) + " by <font color='#ffffff'>"
-//                        + mCursor.getString(ArticleLoader.Query.AUTHOR)
-//                                + "</font>"));
-//
-//            }
-            // Get transition name from ArticleListActivity.java and set it for PhotoView //
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
-//                Bundle extras = getActivity().getIntent().getExtras();
-//                final String imageTransitionName = extras.getString(ArticleListActivity.TRANSITION_NAME);
-//                final String listTitle = extras.getString(ArticleListActivity.TITLE);
-//                Log.v(TAG, imageTransitionName + ":" + "title:" + title + "listTitle:" + listTitle );
-//                if (listTitle.equals(title)){
-//                    Log.v(TAG, "Inside if statement");
-//                    mPhotoView.setTransitionName(imageTransitionName);
-//                }
-//            }
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).substring(0,500).replaceAll("(\r\n|\n)", "<br />")));
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {

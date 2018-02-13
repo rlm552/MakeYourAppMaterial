@@ -1,12 +1,25 @@
 <resources>
     <!-- detail -->
     <dimen name="detail_title_text_size">32sp</dimen>
-    <dimen name="detail_body_text_size">22sp</dimen>
+    <dimen name="detail_body_text_size">20sp</dimen>
+    <dimen name="app_bar_layout_height">350dp</dimen>
+    <dimen name="app_bar_photo_height">250dp</dimen>
+    <dimen name="app_bar_toolbar_height">100dp</dimen>
+    <dimen name="book_title_container_margin_bottom">8dp</dimen>
+    <dimen name="book_title_margin_left">40dp</dimen>
+    <dimen name="book_title_margin_right">75dp</dimen>
+    <dimen name="detail_body_margin_left">72dp</dimen>
+    <dimen name="detail_body_margin_right">16dp</dimen>
+    <dimen name="detail_body_margin_top">40dp</dimen>
+    <dimen name="detail_body_padding">16dp</dimen>
     <item name="detail_body_line_spacing_multiplier" format="float" type="fraction">1.25</item>
 
+    <!--FAB-->
     <dimen name="fab_elevation">2dp</dimen>
     <dimen name="fab_press_translation_z">6dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_width">56dp</dimen>
+    <dimen name="fab_height">56dp</dimen>
 
     <!---Article List -->
     <dimen name="padding_top">64dp</dimen>
@@ -18,5 +31,9 @@
 
     <!--Toolbar-->
     <dimen name="toolbar_height">60dp</dimen>
+
+    <!--Up Button-->
+    <dimen name="up_width">56dp</dimen>
+    <dimen name="up_margin_top">10dp</dimen>
 
 </resources>

@@ -15,9 +15,9 @@
 
         <ImageButton
             android:id="@+id/action_up"
-            android:layout_width="56dp"
+            android:layout_width="@dimen/up_width"
             android:layout_height="?actionBarSize"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/up_margin_top"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/up"
             android:src="@drawable/ic_arrow_back"
